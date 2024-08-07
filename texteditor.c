@@ -1,3 +1,8 @@
+#include <unistd.h> 
+
+//read() and STDIN_FILENO -> from unistd.h 
 int main() {
-  return 0;
+    char c;
+    while (read(STDIN_FILENO, &c, 1) == 1); //read() -> reads 1 byte and puts it into the variable c 
+    return 0;                               // while makes it do so until there is nothing to read anymore 
 }
