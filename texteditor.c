@@ -1,15 +1,25 @@
+#include <stdlib.h>
 #include <termios.h> // meant to Turn the Console into raw mode 
 #include <unistd.h> 
 
+
+struct termios orig_termios;
+
+//disable Raw Mode 
+void disableRawMode() {
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
+}
+
 //enables Raw mode 
 void enableRawMode(){
-    struct termios raw;
+    //-> READS attributes from Terminal
+    tcgetattr(STDIN_FILENO, &orig_termios); //tcgetattr sets the terminals attributes and reads them into a struct  
+    atexit(disableRawMode); //registers when programm is exited and disables raw mode 
 
-    tcgetattr(STDIN_FILENO, &raw); //tcgetattr sets the terminals attributes and reads them into a struct 
-
+    struct termios raw = orig_termios;
     raw.c_lflag &= ~ (ECHO); //<- ECHO makes every key being repeated into the Terminal - Turned Off for ECHO to not get in the way 
-
-    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw); // modified struct pased here 
+    //-> WRITES/applys everything to the Terminal 
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw); // modified struct pased here  
 
 }
 
