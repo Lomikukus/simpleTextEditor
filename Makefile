@@ -1,2 +1,2 @@
-kilo: texteditor.c
-	$(CC) texteditor.c -o kilo -Wall -Wextra -pedantic -std=c99
+kilo.exe: texteditor.c
+	$(CC) texteditor.c -o kilo.exe -Wall -Wextra -pedantic -std=c99
