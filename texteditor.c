@@ -1,3 +1,5 @@
+#include <ctype.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <termios.h> // meant to Turn the Console into raw mode 
 #include <unistd.h> 
@@ -31,6 +33,12 @@ int main() {
     enableRawMode(); 
 
     char c;
-    while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q'); //read() -> reads 1 byte and puts it into the variable c 
+    while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q'){ //read() -> reads 1 byte and puts it into the variable c
+        if (iscntrl(c)){        //-> iscntrl() tests if character is a control character -> non printable characters, but asc 0-31 & 127
+            printf("%d\n", c); // in this case the ASCII code is returned  | %d -> decimal number 
+        } else {
+            printf("%d ('%c')\n", c, c); // printable 32-126 | -> %c write byte as a character 
+        }
+    }  
     return 0;                               // while makes it do so until there is nothing to read anymore 
 }
