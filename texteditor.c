@@ -20,7 +20,7 @@ void enableRawMode(){
 
     struct termios raw = orig_termios;
     raw.c_iflag &= ~(IXON);                         //turns of ctrl q and s, used for dataflow/transmission controll XON XOFF - I -> Input flag
-    raw.c_lflag &= ~ (ECHO | ICANON | ISIG);        //<- ECHO makes every key being repeated into the Terminal - Turned Off for ECHO to not get in the way 
+    raw.c_lflag &= ~ (ECHO | ICANON | IEXTEN | ISIG);        //<- ECHO makes every key being repeated into the Terminal - Turned Off for ECHO to not get in the way 
                                                     //-> WRITES/applys everything to the Terminal 
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);       // modified struct pased here  
 
