@@ -19,10 +19,11 @@ void enableRawMode(){
     atexit(disableRawMode);                         //registers when programm is exited and disables raw mode 
 
     struct termios raw = orig_termios;
-    raw.c_iflag &= ~(ICRNL |IXON);                         //turns of ctrl q and s, used for dataflow/transmission controll XON XOFF - I -> Input flag
-    raw.c_lflag &= ~ (ECHO | ICANON | IEXTEN | ISIG);        //<- ECHO makes every key being repeated into the Terminal - Turned Off for ECHO to not get in the way 
-                                                    //-> WRITES/applys everything to the Terminal 
-    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);       // modified struct pased here  
+    raw.c_iflag &= ~(ICRNL |IXON);                      //turns of ctrl q and s, used for dataflow/transmission controll XON XOFF - I -> Input flag
+    raw.c_oflag &= ~(OPOST);                            // turns of the output processing 
+    raw.c_lflag &= ~ (ECHO | ICANON | IEXTEN | ISIG);   //<- ECHO makes every key being repeated into the Terminal - Turned Off for ECHO to not get in the way 
+                                                        //-> WRITES/applys everything to the Terminal 
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);           // modified struct pased here  
 
 }
 
