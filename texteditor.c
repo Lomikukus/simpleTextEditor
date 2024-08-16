@@ -19,7 +19,7 @@ void enableRawMode(){
     atexit(disableRawMode); //registers when programm is exited and disables raw mode 
 
     struct termios raw = orig_termios;
-    raw.c_lflag &= ~ (ECHO | ICANON); //<- ECHO makes every key being repeated into the Terminal - Turned Off for ECHO to not get in the way 
+    raw.c_lflag &= ~ (ECHO | ICANON | ISIG); //<- ECHO makes every key being repeated into the Terminal - Turned Off for ECHO to not get in the way 
     //-> WRITES/applys everything to the Terminal 
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw); // modified struct pased here  
 
