@@ -1,3 +1,5 @@
+/*** includes ***/
+
 #include <ctype.h>
 #include <errno.h>
 #include <stdio.h>
@@ -5,9 +7,12 @@
 #include <termios.h> // meant to Turn the Console into raw mode 
 #include <unistd.h> 
 
+/*** data ***/
 
 struct termios orig_termios;
 
+
+/*** terminal ***/
 //prints error message and exits programm
 void die(const char* s) {
     perror(s);              //perror looks at the global error variable (errno) and prints a descriptive error message 
@@ -43,6 +48,7 @@ void enableRawMode(){
 
 
 
+/*** init ***/
 
 //read() and STDIN_FILENO -> from unistd.h 
 int main() {
