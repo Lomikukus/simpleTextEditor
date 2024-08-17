@@ -1,4 +1,5 @@
 #include <ctype.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <termios.h> // meant to Turn the Console into raw mode 
@@ -7,15 +8,23 @@
 
 struct termios orig_termios;
 
+//prints error message and exits programm
+void die(const char* s) {
+    perror(s);              //perror looks at the global error variable (errno) and prints a descriptive error message 
+    exit(1);                // exit of 1 indicates error 
+}
+
+
+
 //disable Raw Mode 
 void disableRawMode() {
-    tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
+    if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1) die("tcsetattr"); //check error 
 }
 
 //enables Raw mode 
 void enableRawMode(){
                                                     //-> READS attributes from Terminal
-    tcgetattr(STDIN_FILENO, &orig_termios);         //tcgetattr sets the terminals attributes and reads them into a struct  
+    if (tcgetattr(STDIN_FILENO, &orig_termios) == -1) die("tcgetattr");         //tcgetattr sets the terminals attributes and reads them into a struct  
     atexit(disableRawMode);                         //registers when programm is exited and disables raw mode 
 
     struct termios raw = orig_termios;
@@ -28,7 +37,7 @@ void enableRawMode(){
     raw.c_cc[VTIME] = 1;                                //VTIME max time to wait before read() returns 
 
                                                         //-> WRITES/applys everything to the Terminal 
-    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);           // modified struct pased here  
+    if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) die("tcsetattr");           // modified struct pased here  
 
 }
 
@@ -42,7 +51,7 @@ int main() {
     
     while (1) {         
         char c = '\0';
-        read(STDIN_FILENO, &c, 1);                              //read() -> reads 1 byte and puts it into the variable c
+        if (read(STDIN_FILENO, &c, 1) == -1 && errno != EAGAIN) die("read");                              //read() -> reads 1 byte and puts it into the variable c
         if (iscntrl(c)){                                        //-> iscntrl() tests if character is a control character -> non printable characters, but asc 0-31 & 127
             printf("%d\r\n", c);                                  // in this case the ASCII code is returned  | %d -> decimal number 
         } else {                                                  // \r need to "return" the Cariage like tipewrigther               
