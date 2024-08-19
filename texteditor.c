@@ -7,6 +7,10 @@
 #include <termios.h> // meant to Turn the Console into raw mode 
 #include <unistd.h> 
 
+
+/*** defines ***/
+#define CTRL_KEY(k) ((k) & 0x1f)  //defines Controll Key 
+
 /*** data ***/
 
 struct termios orig_termios;
@@ -63,7 +67,7 @@ int main() {
         } else {                                                  // \r need to "return" the Cariage like tipewrigther               
             printf("%d ('%c')\r\n", c, c);                        // printable 32-126 | -> %c write byte as a character 
         }
-        if(c == 'q') break;
+        if(c == CTRL_KEY('q')) break;
     }  
     return 0;                                                   // while makes it do so until there is nothing to read anymore 
 }
