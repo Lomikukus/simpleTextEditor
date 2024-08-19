@@ -17,13 +17,12 @@ struct termios orig_termios;
 
 
 /*** terminal ***/
+
 //prints error message and exits programm
 void die(const char* s) {
     perror(s);              //perror looks at the global error variable (errno) and prints a descriptive error message 
     exit(1);                // exit of 1 indicates error 
 }
-
-
 
 //disable Raw Mode 
 void disableRawMode() {
@@ -50,7 +49,27 @@ void enableRawMode(){
 
 }
 
+//wait for Keypresses and them Return them
+char editorReadKey() {
+    int nread;
+    char c;
+    while ((nread = read(STDIN_FILENO, &c , 1)) != 1) {
+        if(nread == -1 && errno != EAGAIN) die("read");
+    }
+    return c;
+}
 
+/*** input ***/ //-> editor functionality mapping 
+//waits for keypress and then handles it -> CTRL key functionality 
+void editorProcessKeypress() {
+    char c = editorReadKey();
+
+    switch (c) {
+        case CTRL_KEY('q'):
+            exit(0);
+            break; 
+    }
+}
 
 /*** init ***/
 
@@ -58,16 +77,9 @@ void enableRawMode(){
 int main() {
     enableRawMode(); 
 
+    while (1){
+        editorProcessKeypress();
+    }
     
-    while (1) {         
-        char c = '\0';
-        if (read(STDIN_FILENO, &c, 1) == -1 && errno != EAGAIN) die("read");                              //read() -> reads 1 byte and puts it into the variable c
-        if (iscntrl(c)){                                        //-> iscntrl() tests if character is a control character -> non printable characters, but asc 0-31 & 127
-            printf("%d\r\n", c);                                  // in this case the ASCII code is returned  | %d -> decimal number 
-        } else {                                                  // \r need to "return" the Cariage like tipewrigther               
-            printf("%d ('%c')\r\n", c, c);                        // printable 32-126 | -> %c write byte as a character 
-        }
-        if(c == CTRL_KEY('q')) break;
-    }  
     return 0;                                                   // while makes it do so until there is nothing to read anymore 
 }
