@@ -58,6 +58,12 @@ char editorReadKey() {
     }
     return c;
 }
+/*** output ***/
+
+void editorRefreshScreen(){
+    write(STDOUT_FILENO, "\x1b[2J", 4); //-> write() -> write 4 bytes to terminal | \x1b is an escape character 27-> decimal 
+}
+
 
 /*** input ***/ //-> editor functionality mapping 
 //waits for keypress and then handles it -> CTRL key functionality 
@@ -78,6 +84,7 @@ int main() {
     enableRawMode(); 
 
     while (1){
+        editorRefreshScreen();
         editorProcessKeypress();
     }
     
