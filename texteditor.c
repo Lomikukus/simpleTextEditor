@@ -62,8 +62,9 @@ char editorReadKey() {
 
 void editorRefreshScreen(){
     write(STDOUT_FILENO, "\x1b[2J", 4); //-> write() -> write 4 bytes to terminal | \x1b is an escape character 27-> decimal | J -> Command -> clear screen | argument 2 means entire screen
-}                                       //escape sequence written to terminal -> always start with 27 ^^^ followed by [
-                                        // escape sequences instruct the terminal to do a variaty of txt formating (coloring, moving cursor, clearing, etc.)    
+    write(STDOUT_FILENO, "\x1b[H", 3);  //escape sequence written to terminal -> always start with 27 ^^^ followed by [ | H -command-> position cursor S
+}                                       // escape sequences instruct the terminal to do a variaty of txt formating (coloring, moving cursor, clearing, etc.)    
+                                        
 
 /*** input ***/ //-> editor functionality mapping 
 //waits for keypress and then handles it -> CTRL key functionality 
