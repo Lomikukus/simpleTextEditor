@@ -20,6 +20,9 @@ struct termios orig_termios;
 
 //prints error message and exits programm
 void die(const char* s) {
+    write(STDOUT_FILENO, "\x1b[2J",4);
+    write(STDOUT_FILENO, "\x1b[H",3);
+
     perror(s);              //perror looks at the global error variable (errno) and prints a descriptive error message 
     exit(1);                // exit of 1 indicates error 
 }
@@ -73,6 +76,8 @@ void editorProcessKeypress() {
 
     switch (c) {
         case CTRL_KEY('q'):
+            write(STDOUT_FILENO, "\x1b[2J",4);
+            write(STDOUT_FILENO, "\x1b[H",3);
             exit(0);
             break; 
     }
