@@ -62,11 +62,23 @@ char editorReadKey() {
     return c;
 }
 /*** output ***/
+// draws rows like in vim
+void editorDrawRows(){
+    int y;
+    for (y = 0; y < 24; y++){
+        write(STDOUT_FILENO, "~\r\n", 3);
+    }
+}
+
 
 void editorRefreshScreen(){
     write(STDOUT_FILENO, "\x1b[2J", 4); //-> write() -> write 4 bytes to terminal | \x1b is an escape character 27-> decimal | J -> Command -> clear screen | argument 2 means entire screen
     write(STDOUT_FILENO, "\x1b[H", 3);  //escape sequence written to terminal -> always start with 27 ^^^ followed by [ | H -command-> position cursor S
-}                                       // escape sequences instruct the terminal to do a variaty of txt formating (coloring, moving cursor, clearing, etc.)    
+                                        // escape sequences instruct the terminal to do a variaty of txt formating (coloring, moving cursor, clearing, etc.)
+    editorDrawRows();
+
+    write(STDOUT_FILENO, "\x1b[H", 3); 
+}                                           
                                         
 
 /*** input ***/ //-> editor functionality mapping 
