@@ -13,7 +13,14 @@
 
 /*** data ***/
 
-struct termios orig_termios;
+ struct editorConfig {
+    struct termios orig_termios;
+ };
+ 
+ struct editorConfig E; //global variable containing editor state 
+
+
+
 
 
 /*** terminal ***/
@@ -29,16 +36,16 @@ void die(const char* s) {
 
 //disable Raw Mode 
 void disableRawMode() {
-    if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1) die("tcsetattr"); //check error 
+    if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &E.orig_termios) == -1) die("tcsetattr"); //check error 
 }
 
 //enables Raw mode 
 void enableRawMode(){
                                                     //-> READS attributes from Terminal
-    if (tcgetattr(STDIN_FILENO, &orig_termios) == -1) die("tcgetattr");         //tcgetattr sets the terminals attributes and reads them into a struct  
+    if (tcgetattr(STDIN_FILENO, &E.orig_termios) == -1) die("tcgetattr");         //tcgetattr sets the terminals attributes and reads them into a struct  
     atexit(disableRawMode);                         //registers when programm is exited and disables raw mode 
 
-    struct termios raw = orig_termios;
+    struct termios raw = E.orig_termios;
     raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP |IXON );                      //turns of ctrl q and s, used for dataflow/transmission controll XON XOFF - I -> Input flag
     raw.c_oflag &= ~(OPOST);                            // turns of the output processing 
     raw.c_cflag &= (CS8);                               // Sets the Character size to 8 Bits per Byte ~ usally on by default  
