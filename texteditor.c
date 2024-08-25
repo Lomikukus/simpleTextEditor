@@ -144,12 +144,14 @@ void editorDrawRows(struct abuf *ab){
 void editorRefreshScreen(){
     struct abuf ab = ABUF_INIT;
 
+    abAppend(&ab, "\x1b[?25l", 6);
     abAppend(&ab, "\x1b[2J", 4); //-> write() -> write 4 bytes to terminal | \x1b is an escape character 27-> decimal | J -> Command -> clear screen | argument 2 means entire screen
     abAppend(&ab, "\x1b[H", 3);  //escape sequence written to terminal -> always start with 27 ^^^ followed by [ | H -command-> position cursor S
                                         // escape sequences instruct the terminal to do a variaty of txt formating (coloring, moving cursor, clearing, etc.)
     editorDrawRows(&ab);
 
     abAppend(&ab, "\x1b[H", 3);
+    abAppend(&ab, "\x1b[?25h", 6);
 
     write(STDOUT_FILENO, ab.b, ab.len);
     abFree(&ab);
